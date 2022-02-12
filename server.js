@@ -1,8 +1,8 @@
 const express = require('express');
-const PORT = process.env.PORT || 3001;
 const app = express();
 const mysql = require('mysql2');
 var inquirer = require('inquirer');
+require("console.table");
 
 // Express middleware
 app.use(express.urlencoded({ extended: false }));
@@ -37,25 +37,26 @@ function mainMenu() {
         ]
     })
     .then(function ({ menu }) {
-      if (menu = 'View all departments') {
+      if (menu === 'View all departments') {
         viewDepartments();
+        return;
       }
-      else if (menu = 'View all roles') {
+      else if (menu === 'View all roles') {
         viewRoles();
       }
-      else if (menu = 'View all employees') {
+      else if (menu === 'View all employees') {
         viewEmployees();
       }
-      else if (menu = 'Add a department') {
+      else if (menu === 'Add a department') {
         addDepartment();
       }
-      else if (menu = 'Add a role') {
+      else if (menu === 'Add a role') {
         addRole();
       }
-      else if (menu = 'Add an employee') {
+      else if (menu === 'Add an employee') {
         addEmployee();
       }
-      else if (menu = 'Update an employee role') {
+      else if (menu === 'Update an employee role') {
         updateRole();
       }
     })
@@ -64,16 +65,18 @@ function mainMenu() {
 function viewDepartments() {
   connection.query('SELECT * FROM department', function (err, results) {
     console.table(results);
-  });
-  mainMenu();
+    mainMenu();
+  })
 };
 
 function viewRoles() {
-  connection.query('SELECT * FROM role', function (err, results) {
+  connection.query('SELECT r.id, r.title, r.salary, d.name FROM role AS r JOIN department AS d ON r.department_id = d.id',
+  function (err, results) {
     console.table(results);
+    mainMenu();
   });
-  mainMenu();
 }
+
 
 function viewEmployees() {
   connection.query('SELECT * FROM employee', function (err, results) {

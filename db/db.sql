@@ -1,2 +1,2 @@
-CREATE DATABASE myEmployees;
+CREATE DATABASE IF NOT EXISTS myEmployees;
 USE myEmployees;

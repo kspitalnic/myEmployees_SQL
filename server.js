@@ -77,22 +77,28 @@ function viewRoles() {
   });
 }
 
-// THEN I am presented with a formatted table showing employee data, 
-// including employee ids, first names, last names, job titles, departments, salaries, 
-// and managers that the employees report to
 
 function viewEmployees() {
   var query = 
-  `SELECT e.id, e.first_name, e.last_name, r.title, d.name AS department, r.salary, CONCAT(m.first_name, ' ', m.last_name) AS manager
+  `SELECT e.id, e.first_name, e.last_name, r.title, d.name, r.salary, CONCAT(manager.first_name, ' ', manager.last_name) AS manager
   FROM employee e 
     LEFT JOIN role r 
       ON e.role_id = r.id 
     LEFT JOIN department d 
       ON d.id = r.department_id
-    LEFT JOIN employee m 
-      ON m.id = e.manager_id`
+    LEFT JOIN employee manager
+      ON manager.id = e.manager_id`
+    
+
   connection.query(query, function (err, results) {
     console.table(results);
     mainMenu();
   });
+}
+
+// WHEN I choose to add a department
+// THEN I am prompted to enter the name of the department and that department is added to the database
+
+function addDepartment(){
+
 }

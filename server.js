@@ -64,6 +64,7 @@ function mainMenu() {
 
 function viewDepartments() {
   connection.query('SELECT * FROM department', function (err, results) {
+    if (err) throw err; 
     console.table(results);
     mainMenu();
   })
@@ -72,6 +73,7 @@ function viewDepartments() {
 function viewRoles() {
   connection.query('SELECT r.id, r.title, r.salary, d.name FROM role AS r JOIN department AS d ON r.department_id = d.id',
   function (err, results) {
+    if (err) throw err; 
     console.table(results);
     mainMenu();
   });
@@ -79,7 +81,7 @@ function viewRoles() {
 
 
 function viewEmployees() {
-  var query = 
+  var sql = 
   `SELECT e.id, e.first_name, e.last_name, r.title, d.name, r.salary, CONCAT(manager.first_name, ' ', manager.last_name) AS manager
   FROM employee e 
     LEFT JOIN role r 
@@ -88,9 +90,9 @@ function viewEmployees() {
       ON d.id = r.department_id
     LEFT JOIN employee manager
       ON manager.id = e.manager_id`
-    
+  connection.query(sql, function (err, results) {
+    if (err) throw err; 
 
-  connection.query(query, function (err, results) {
     console.table(results);
     mainMenu();
   });
@@ -98,7 +100,33 @@ function viewEmployees() {
 
 // WHEN I choose to add a department
 // THEN I am prompted to enter the name of the department and that department is added to the database
-
 function addDepartment(){
+  connection.query(`SELECT department.name FROM department`, function(err, res){
+    if (err) throw err; 
+    prompt();
+  })
 
+  function prompt(){
+    inquirer.prompt([
+      {
+        type: "input",
+        name: "name",
+        message: "Please enter the new department name"
+      }
+    ])
+    .then(function(res){
+      console.log(res)
+      var sql = `INSERT INTO department SET ?`
+      connection.query(sql,
+        res, function(err, res){
+        if (err) throw err; 
+        mainMenu();
+      });
+    })
+  }
 }
+
+
+// DELETE FROM ... WHERE ... = ...
+
+//UPDATE ... SET ... WHERE id = ... 

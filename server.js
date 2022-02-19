@@ -98,8 +98,6 @@ function viewEmployees() {
   });
 }
 
-// WHEN I choose to add a department
-// THEN I am prompted to enter the name of the department and that department is added to the database
 function addDepartment(){
   connection.query(`SELECT department.name FROM department`, function(err, res){
     if (err) throw err; 
@@ -126,6 +124,121 @@ function addDepartment(){
   }
 }
 
+// WHEN I choose to add a role
+// THEN I am prompted to enter the name, salary, and department 
+// for the role and that role is added to the database
+function addRole(){  
+  var sql = `
+    SELECT department.id, department.name 
+    FROM department`
+  connection.query(sql, function(err, res){
+    if (err) throw err; 
+    var select_department = res.map(({ id, name }) => ({
+      value: id, name: `${name}`
+    }))
+    console.log(select_department);
+    prompt(select_department);
+  })
+
+  function prompt(select_department){
+    inquirer.prompt([
+      {
+        type: "input",
+        name: "title",
+        message: "Please enter the new role title"
+      },      {
+        type: "input",
+        name: "salary",
+        message: "Please enter the new role salary"
+      },
+      {
+        type: "list",
+        name: "department_id",
+        message: "Please select the appropriate department for this role",
+        choices: select_department
+      }
+    ])
+    .then(function(res){
+      console.log(res)
+      var sql = `INSERT INTO role SET ?`
+      connection.query(sql,
+        res, function(err, res){
+        if (err) throw err; 
+        mainMenu();
+      });
+    })
+  }
+}
+
+
+// WHEN I choose to add an employee
+// THEN I am prompted to enter the employee’s first name, last name, role, 
+// and manager, and that employee is added to the database
+
+
+// first last name 
+//query to find all roles, and choose roles 
+// map out role 
+// choose manager , map out manager 
+// filter to get managers 
+//create (long)
+
+
+
+function addEmployee(){
+  var sql = `
+  SELECT role.id, role.title 
+  FROM role`
+  connection.query(sql, function(err, res){
+    if (err) throw err; 
+    var select_role = res.map(({ id, title }) => ({
+      value: id, name: `${title}`
+    }))
+    console.log(select_role);
+    prompt(select_role);
+  })
+
+  function prompt(select_role){
+    inquirer.prompt([
+      {
+        type: "input",
+        name: "first_name",
+        message: "Please enter the new employee's first name"
+      },      {
+        type: "input",
+        name: "last_name",
+        message: "Please enter the new employee's last name"
+      },
+      {
+        type: "list",
+        name: "role_id",
+        message: "Please select the appropriate role for this employee",
+        choices: select_role
+      }
+    ])
+    .then(function(res){
+      console.log(res)
+      var sql = `INSERT INTO employee SET ?`
+      connection.query(sql,
+        res, function(err, res){
+        if (err) throw err; 
+        mainMenu();
+      });
+    })
+  }
+}
+
+//WHEN I choose to update an employee role
+// THEN I am prompted to select an employee to update and their new role 
+// and this information is updated in the database
+
+function updateRole(){
+  connection.query(``, function (err,res){
+    if(err) throw err; 
+    
+    
+  })
+}
 
 // DELETE FROM ... WHERE ... = ...
 

@@ -1,7 +1,7 @@
 {
   "name": "sqlchallenge",
   "version": "1.0.0",
-  "description": "",
+  "description": "This application allows users interact with an employee database. Users have the option of viewing all departments, roles, or employees. As well as to add a role or department or update an employee.",
   "main": "server.js",
   "scripts": {
     "test": "jest",
@@ -11,12 +11,22 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "12": "^1.0.2",
     "console.table": "^0.10.0",
-    "express": "^4.17.2",
+    "express": "^4.17.3",
     "inquirer": "^8.2.0",
+    "mysql": "^2.18.1",
     "mysql2": "^2.3.3"
   },
   "devDependencies": {
     "jest": "^27.5.1"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kspitalnic/myEmployees_SQL.git"
+  },
+  "bugs": {
+    "url": "https://github.com/kspitalnic/myEmployees_SQL/issues"
+  },
+  "homepage": "https://github.com/kspitalnic/myEmployees_SQL#readme"
 }

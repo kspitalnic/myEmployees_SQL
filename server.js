@@ -113,7 +113,6 @@ function addDepartment(){
       }
     ])
     .then(function(res){
-      console.log(res)
       var sql = `INSERT INTO department SET ?`
       connection.query(sql,
         res, function(err, res){
@@ -136,7 +135,6 @@ function addRole(){
     var select_department = res.map(({ id, name }) => ({
       value: id, name: `${name}`
     }))
-    console.log(select_department);
     prompt(select_department);
   })
 
@@ -146,7 +144,8 @@ function addRole(){
         type: "input",
         name: "title",
         message: "Please enter the new role title"
-      },      {
+      },      
+      {
         type: "input",
         name: "salary",
         message: "Please enter the new role salary"
@@ -159,7 +158,6 @@ function addRole(){
       }
     ])
     .then(function(res){
-      console.log(res)
       var sql = `INSERT INTO role SET ?`
       connection.query(sql,
         res, function(err, res){
@@ -184,17 +182,17 @@ function addRole(){
 //create (long)
 
 
-
 function addEmployee(){
   var sql = `
-  SELECT role.id, role.title 
+  SELECT role.id, role.title
   FROM role`
   connection.query(sql, function(err, res){
     if (err) throw err; 
     var select_role = res.map(({ id, title }) => ({
       value: id, name: `${title}`
     }))
-    console.log(select_role);
+
+
     prompt(select_role);
   })
 
@@ -214,31 +212,88 @@ function addEmployee(){
         name: "role_id",
         message: "Please select the appropriate role for this employee",
         choices: select_role
+      }])
+      .then(function(res){
+      var sql = `INSERT INTO employee SET ?`
+      connection.query(sql,
+        res, function(err, res){
+        if (err) throw err; 
+        prompt2();
+      });
+    })}}
+    function prompt2(){
+    var sql = `
+    SELECT employee.first_name, employee.last_name, employee.manager_id, employee.id
+    FROM employee`
+    connection.query(sql, function(err, res){
+      if (err) throw err; 
+      var select_manager = res.map(({ id, first_name, last_name}) =>
+      ({value: id, name: first_name + " " + last_name }))
+  
+      prompt2();
+
+      function prompt2 (){
+        inquirer.prompt([{
+      type: "list",
+      name: "manager_id",
+      message: "Please select the manager for this employee",
+      choices: ['Dave Smith', 'null']
+    }
+  ])
+    .then(function(res){
+    var sql = `UPDATE employee SET manager_id = 4 WHERE manager_id = null`;  
+    connection.query(sql,
+      res, function(err, res){
+      if (err) throw err; 
+      mainMenu();
+    });
+  })}})}
+
+
+//WHEN I choose to update an employee role
+// THEN I am prompted to select an employee to update and their new role 
+// and this information is updated in the database
+function updateRole(){ 
+  var sql = `SELECT id, first_name, last_name FROM employee`
+  connection.query(sql, function(err, res){
+    if (err) throw err; 
+    var select_employee = res.map(({ id, first_name, last_name}) =>
+    ({value: id, name: first_name + " " + last_name }))
+
+    console.log(select_employee);
+    roleUpdatePrompt2(select_employee);
+  })} 
+  function roleUpdatePrompt2 (select_employee){
+  var sql2 = `
+    SELECT role.id, role.title 
+    FROM role`
+  connection.query(sql2, function(err, res){
+    if (err) throw err; 
+    var select_role = res.map(({ id, title }) => ({
+      value: id, name: `${title}`
+    }))
+    console.log(select_role);
+    prompt(select_role);
+  })
+
+  function prompt(select_role){
+    inquirer.prompt([
+      {
+        type: "input",
+        name: "title",
+        choices: select_role,
+        message: "What is the updated employee role?"
       }
     ])
     .then(function(res){
-      console.log(res)
-      var sql = `INSERT INTO employee SET ?`
+      var sql = `UPDATE employee SET role_id = role.id`;  
       connection.query(sql,
         res, function(err, res){
         if (err) throw err; 
         mainMenu();
       });
-    })
-  }
-}
+    })}}
 
-//WHEN I choose to update an employee role
-// THEN I am prompted to select an employee to update and their new role 
-// and this information is updated in the database
-
-function updateRole(){
-  connection.query(``, function (err,res){
-    if(err) throw err; 
-    
-    
-  })
-}
 
 // DELETE FROM ... WHERE ... = ...
 
